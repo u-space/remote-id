@@ -1,13 +1,14 @@
 import { Response } from "express";
-import { isString } from "lodash";
 import { InvalidDataError } from "../../errors/InvalidDataError";
 import { NoDataError } from "../../errors/NoDataError";
 import Configuration from "../../utils/Configuration";
 import LogLevel from "../../utils/logs/LogLevel";
-import LogsUtilsFactory from "../../utils/logs/LogsUtilsFactory";
+import LogsUtilsFactory, {
+  LogsUtilsType,
+} from "../../utils/logs/LogsUtilsFactory";
 
 export default class ErrorUtils {
-  static logsUtils = LogsUtilsFactory.getLogsUtils(Configuration.LOGS);
+  static logsUtils = LogsUtilsFactory.getLogsUtils(LogsUtilsType.CONSOLE);
 
   static respond(
     response: Response,
@@ -50,7 +51,7 @@ export default class ErrorUtils {
     if (status < 200 || status >= 300) {
       throw `Invalid status code [status=${status}]`;
     }
-    if (isString(body)) {
+    if (typeof body === "string") {
       ErrorUtils.respond(res, status, body, null, true);
     } else {
       ErrorUtils.respond(res, status, null, body);
