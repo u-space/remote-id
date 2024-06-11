@@ -4,7 +4,8 @@
   "description": "Remote id api for cielum",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 ts-node test.ts",
+    "dev": "cross-env NODE_ENV=dev nodemon ./src/app.ts"
   },
   "dependencies": {
     "@turf/turf": "^7.0.0",
