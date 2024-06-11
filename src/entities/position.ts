@@ -5,29 +5,23 @@
  */
 
 import { Point, Polygon } from "geojson";
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  RelationId,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Position {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({ type: "varchar", length: 20 })
+  @Column({ type: "varchar", length: 50 })
   operator_username?: string;
 
-  @Column({ type: "varchar", length: 10 })
+  @Column({ type: "uuid" })
   uas_id?: string;
 
   @Column({ type: "int" })
   ua_type?: number;
 
-  @Column({ type: "datetime" })
+  @Column({ type: "timestamp" })
   timestamp?: Date;
 
   @Column({ type: "int" })
@@ -69,9 +63,9 @@ export class Position {
   @Column({ type: "int" })
   operating_area_ceiling?: number;
 
-  @Column({ type: "datetime" })
+  @Column({ type: "timestamp" })
   operating_area_start_time?: Date;
 
-  @Column({ type: "datetime" })
+  @Column({ type: "timestamp" })
   operating_area_end_time?: Date;
 }
