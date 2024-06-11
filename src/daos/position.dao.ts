@@ -10,6 +10,8 @@ import { AppDataSource } from "../data-source";
 export class PositionDao {
   private repository = AppDataSource.getRepository(Position);
 
+  constructor() {}
+
   async all() {
     try {
       return this.repository.find();
@@ -52,10 +54,11 @@ export class PositionDao {
       .getMany();
   }
 
-  async save(entity: any) {
+  async save(entity: Position) {
     try {
       return this.repository.save(entity);
     } catch (error: any) {
+      console.log(error);
       throw new Error(
         "There was an error trying to execute PositionDao.save(entity)"
       );
