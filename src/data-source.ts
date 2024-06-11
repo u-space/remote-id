@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import Configuration from "./utils/Configuration";
-import { Position } from "./entities/position";
 
 const entitiesPath = __dirname + "/entities/*{.js,.ts}";
 console.log(entitiesPath);
@@ -13,11 +12,9 @@ export const AppDataSource = new DataSource({
   username: Configuration.DATABASE_USERNAME,
   password: Configuration.DATABASE_PASSWORD,
   database: Configuration.DATABASE_DATABASE,
-  synchronize: true,
-  dropSchema: true,
+  synchronize: false,
   logging: false,
-  entities: [Position],
-  // entities: [__dirname + "./src/entities/*{.js,.ts}"],
+  entities: [entitiesPath],
   migrations: [],
   subscribers: [],
   ssl: true,
