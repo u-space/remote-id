@@ -1,9 +1,9 @@
-import { isUndefined } from "lodash";
-
 export default class ConsoleUtils {
   static print(line: string, color?: ConsoleColor): void {
     let colorCode = 0;
-    if (!isUndefined(color)) colorCode = ConsoleUtils.getColorCode(color);
+    if (color !== undefined) {
+      colorCode = ConsoleUtils.getColorCode(color);
+    }
     console.log(`\x1b[${colorCode}m${line}\x1b[0m`);
   }
 

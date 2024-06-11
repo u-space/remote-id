@@ -19,38 +19,29 @@ try {
   app.use(cors());
   app.use(express.json());
 
-  // // const swaggerDocument = require("./swagger-output.json");
-  // const swaggerDocument = require("/home/emi/desarrollo/dinacia/flight-request-api/swagger-output.json");
-
-  // app.use("/swagger", express.static(pathToSwaggerUi));
-  // app.get("/swagger/api-docs.json", (req, res) => {
-  //   res.setHeader("Content-Type", "application/json");
-  //   res.send(swaggerDocument);
-  // });
-
-  if (Configuration.MOCK_JWT_VERIFICATION) {
-    app.use(
-      JWTUtilsFactory.getJWTUtils(
-        true,
-        Configuration.JWT_USERNAME,
-        ""
-      ).getCheckJWTFunction()
-    );
-  } else {
-    auth_public_key = readFileSync("./public.key", "utf8");
-    // log request
-    app.use((req: Request, res: Response, next: NextFunction) => {
-      consoleLogRequest(req);
-      next();
-    });
-    app.use(
-      JWTUtilsFactory.getJWTUtils(
-        false,
-        "",
-        auth_public_key
-      ).getCheckJWTFunction()
-    );
-  }
+  // if (Configuration.MOCK_JWT_VERIFICATION) {
+  //   app.use(
+  //     JWTUtilsFactory.getJWTUtils(
+  //       true,
+  //       Configuration.JWT_USERNAME,
+  //       ""
+  //     ).getCheckJWTFunction()
+  //   );
+  // } else {
+  auth_public_key = readFileSync("./public.key", "utf8");
+  // log request
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    consoleLogRequest(req);
+    next();
+  });
+  app.use(
+    JWTUtilsFactory.getJWTUtils(
+      false,
+      "",
+      auth_public_key
+    ).getCheckJWTFunction()
+  );
+  // }
 
   app.use(router);
   // app listen using ssl

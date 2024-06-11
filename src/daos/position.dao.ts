@@ -4,41 +4,37 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { getRepository } from "typeorm";
-import { Operation } from "../entities/operation";
 import { Position } from "../entities/position";
-import { DataBaseError, NotFoundError } from "./db-errors";
-import { TypeOrmErrorType } from "./type-orm-error-type";
+import { AppDataSource } from "../data-source";
 
 export class PositionDao {
-  private repository = getRepository(Position);
+  private repository = AppDataSource.getRepository(Position);
 
   async all() {
     try {
       return this.repository.find();
     } catch (error: any) {
-      throw new DataBaseError(
-        "There was an error trying to execute PositionDao.all()",
-        error
-      );
+      throw new Error("There was an error trying to execute PositionDao.all()");
     }
   }
 
-  async one(id: string) {
+  async one(id: number): Promise<Position> {
     try {
-      return this.repository.findOneOrFail(id);
+      return this.repository.findOneByOrFail({ id });
     } catch (error: any) {
-      if (error.name === TypeOrmErrorType.EntityNotFound) {
-        throw new NotFoundError(
-          `There is no position with the "id" received (id=${id})`,
-          error
-        );
-      } else {
-        throw new DataBaseError(
-          `There was an error trying to execute PositionDao.one(${id})`,
-          error
-        );
-      }
+      throw new Error(`There is no position with the "id" received (id=${id})`);
+
+      // if (error.name === TypeOrmErrorType.EntityNotFound) {
+      //   throw new NotFoundError(
+      //     `There is no position with the "id" received (id=${id})`,
+      //     error
+      //   );
+      // } else {
+      //   throw new DataBaseError(
+      //     `There was an error trying to execute PositionDao.one(${id})`,
+      //     error
+      //   );
+      // }
     }
   }
 
@@ -60,10 +56,14 @@ export class PositionDao {
     try {
       return this.repository.save(entity);
     } catch (error: any) {
-      throw new DataBaseError(
-        "There was an error trying to execute PositionDao.save(entity)",
-        error
+      throw new Error(
+        "There was an error trying to execute PositionDao.save(entity)"
       );
+
+      // throw new DataBaseError(
+      //   "There was an error trying to execute PositionDao.save(entity)",
+      //   error
+      // );
     }
   }
 
@@ -71,34 +71,34 @@ export class PositionDao {
     return this.repository.save(entities);
   }
 
-  async checkPositionWithOperation(position: Position) {
-    const result = await getRepository(Operation)
-      .createQueryBuilder("operation")
-      .select(
-        'st_contains(operation_volume."operation_geography" ,ST_GeomFromGeoJSON(:origin)) AND ( CAST(:altitude as numeric) <@ numrange(operation_volume."min_altitude", operation_volume."max_altitude")) AND ( CAST(:time as timestamptz) <@ tstzrange(operation_volume."effective_time_begin", operation_volume."effective_time_end")) AND state = \'ACTIVATED\'',
-        "inOperation"
-      )
-      .innerJoin("operation.operation_volumes", "operation_volume")
-      .where('operation."gufi" = :gufi')
-      .setParameters({
-        gufi: position.gufi,
-        altitude: position.altitude_gps,
-        origin: JSON.stringify(position.location),
-        time: position.time_sent,
-      })
+  // async checkPositionWithOperation(position: Position) {
+  //   const result = await getRepository(Operation)
+  //     .createQueryBuilder("operation")
+  //     .select(
+  //       'st_contains(operation_volume."operation_geography" ,ST_GeomFromGeoJSON(:origin)) AND ( CAST(:altitude as numeric) <@ numrange(operation_volume."min_altitude", operation_volume."max_altitude")) AND ( CAST(:time as timestamptz) <@ tstzrange(operation_volume."effective_time_begin", operation_volume."effective_time_end")) AND state = \'ACTIVATED\'',
+  //       "inOperation"
+  //     )
+  //     .innerJoin("operation.operation_volumes", "operation_volume")
+  //     .where('operation."gufi" = :gufi')
+  //     .setParameters({
+  //       gufi: position.gufi,
+  //       altitude: position.altitude_gps,
+  //       origin: JSON.stringify(position.location),
+  //       time: position.time_sent,
+  //     })
 
-      .getRawMany();
-    // Returns true if its has any result.inOperation in true else false
-    return result.some((result) => result.inOperation);
-  }
+  //     .getRawMany();
+  //   // Returns true if its has any result.inOperation in true else false
+  //   return result.some((result) => result.inOperation);
+  // }
 
-  async existsPositionForOperation(operationGufi: string) {
-    const dbResult = await getRepository(Position)
-      .createQueryBuilder("position")
-      .where("position.gufiGufi = :gufi", { gufi: operationGufi })
-      .getOne();
-    return typeof dbResult !== "undefined";
-  }
+  // async existsPositionForOperation(operationGufi: string) {
+  //   const dbResult = await getRepository(Position)
+  //     .createQueryBuilder("position")
+  //     .where("position.gufiGufi = :gufi", { gufi: operationGufi })
+  //     .getOne();
+  //   return typeof dbResult !== "undefined";
+  // }
 
   // async remove(id : string) {
   //     let userToRemove = await this.repository.findOne(id);
