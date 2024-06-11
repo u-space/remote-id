@@ -6,6 +6,7 @@
 
 import { Position } from "../entities/position";
 import { AppDataSource } from "../data-source";
+import { Between, MoreThan } from "typeorm";
 
 export class PositionDao {
   private repository = AppDataSource.getRepository(Position);
@@ -15,6 +16,24 @@ export class PositionDao {
   async all() {
     try {
       return this.repository.find();
+    } catch (error: any) {
+      throw new Error("There was an error trying to execute PositionDao.all()");
+    }
+  }
+
+  async allAfterId(id: number) {
+    try {
+      return this.repository.find({ where: { id: MoreThan(id) } });
+    } catch (error: any) {
+      throw new Error("There was an error trying to execute PositionDao.all()");
+    }
+  }
+
+  async allBetweenDates(startDate: Date, endDate: Date) {
+    try {
+      return this.repository.find({
+        where: { timestamp: Between(startDate, endDate) },
+      });
     } catch (error: any) {
       throw new Error("There was an error trying to execute PositionDao.all()");
     }
@@ -40,19 +59,19 @@ export class PositionDao {
     }
   }
 
-  async oneByGufiWithDates(gufi: string, startDate: Date, endDate: Date) {
-    return await this.repository
-      .createQueryBuilder("position")
-      .select("position")
-      .where("position.gufi = :gufi", { gufi })
-      .andWhere("position.time_sent >= :startDate", { startDate })
-      .andWhere("position.time_sent <= :endDate", { endDate })
-      // Include position gufi in the result, load eager relation
-      .leftJoinAndSelect("position.gufi", "operation")
-      // Include position uvin in the result, load eager relation
-      .leftJoinAndSelect("position.uvin", "uvin")
-      .getMany();
-  }
+  // async oneByGufiWithDates(gufi: string, startDate: Date, endDate: Date) {
+  //   return await this.repository
+  //     .createQueryBuilder("position")
+  //     .select("position")
+  //     .where("position.gufi = :gufi", { gufi })
+  //     .andWhere("position.time_sent >= :startDate", { startDate })
+  //     .andWhere("position.time_sent <= :endDate", { endDate })
+  //     // Include position gufi in the result, load eager relation
+  //     .leftJoinAndSelect("position.gufi", "operation")
+  //     // Include position uvin in the result, load eager relation
+  //     .leftJoinAndSelect("position.uvin", "uvin")
+  //     .getMany();
+  // }
 
   async save(entity: Position) {
     try {
@@ -70,7 +89,7 @@ export class PositionDao {
     }
   }
 
-  async savePositionsArray(entities: any) {
+  async savePositionsArray(entities: Position[]) {
     return this.repository.save(entities);
   }
 

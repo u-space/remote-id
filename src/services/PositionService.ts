@@ -10,6 +10,18 @@ export class PositionService {
     this.positionDao = new PositionDao();
   }
 
+  async getPositions() {
+    return await this.positionDao.all();
+  }
+
+  async getPositionsAfterId(id: number) {
+    return await this.positionDao.allAfterId(id);
+  }
+
+  async getPositionsBetweenDates(startDate: Date, endDate: Date) {
+    return await this.positionDao.allBetweenDates(startDate, endDate);
+  }
+
   async addPosition(positionRequest: IPositionPostRequest, username: string) {
     const position: Position = {
       operator_username: username,

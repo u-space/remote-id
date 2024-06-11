@@ -13,6 +13,16 @@ router.post(
   "/position",
   positionController.postPositionRequest.bind(positionController)
 );
+
+router.get(
+  "/position",
+  positionController.getPositionRequest.bind(positionController)
+);
+
+router.get(
+  "/position/after/:id",
+  positionController.getPositionAfterIdRequest.bind(positionController)
+);
 // router.get(
 //   "/coordination/:id",
 //   positionController.getCoordination.bind(positionController)

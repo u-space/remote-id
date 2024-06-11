@@ -25,4 +25,36 @@ export class PositionController {
       console.log("Error: ", error);
     }
   };
+
+  getPositionRequest = async (req: Request, res: Response) => {
+    try {
+      const positions = await this.positionService.getPositions();
+      res.status(200).send(positions);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  getPositionAfterIdRequest = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const positions = await this.positionService.getPositionsAfterId(+id);
+      res.status(200).send(positions);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  getPositionsBetweenDates = async (req: Request, res: Response) => {
+    try {
+      const { startDate, endDate } = req.params;
+      const positions = await this.positionService.getPositionsBetweenDates(
+        new Date(startDate),
+        new Date(endDate)
+      );
+      res.status(200).send(positions);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
 }
