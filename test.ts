@@ -1,16 +1,8 @@
 import * as turf from "@turf/turf";
-import {
-  Feature,
-  FeatureCollection,
-  GeoJsonProperties,
-  LineString,
-  MultiLineString,
-  Point,
-  Polygon,
-} from "geojson";
-import { PositionService } from "./src/services/PositionService";
+import { Point, Polygon } from "geojson";
 import { IPositionPostRequest } from "./src/controllers/IPositionPostRequest";
 import { initialized } from "./src/data-source";
+import { PositionService } from "./src/services/PositionService";
 
 export function calculatePoint(
   polygonGeoJSON: Polygon,
@@ -22,7 +14,7 @@ export function calculatePoint(
 
   // Obtener el perímetro del polígono
   const line = turf.polygonToLine(polygonGeoJSON);
-  const length = turf.length(line, { units: "kilometers" });
+  const length = turf.length(line, { units: "meters" });
 
   // Calcular la distancia efectiva tomando en cuenta vueltas completas
   const effectiveDistance = distance % length;
@@ -30,14 +22,14 @@ export function calculatePoint(
   // Calcular el punto en la línea
   if (line.type === "Feature" && line.geometry.type === "LineString") {
     const point = turf.along(line.geometry, effectiveDistance, {
-      units: "kilometers",
+      units: "meters",
     });
     return point.geometry;
   }
   return null;
 }
 
-async function main() {
+async function pointOnPolygon(timeElapsed: number) {
   const positionService = new PositionService();
   const pol: Polygon = {
     coordinates: [
@@ -51,7 +43,7 @@ async function main() {
     ],
     type: "Polygon",
   };
-  const point = calculatePoint(pol, 10, 10);
+  const point = calculatePoint(pol, 10, timeElapsed);
   const iPosition: IPositionPostRequest = {
     authentication_data: "",
     uas_id: "f95b0fb9-5112-4f8e-97a8-7b6c682a697c",
@@ -96,6 +88,17 @@ async function main() {
   }
 }
 
+const startTime = new Date();
+function loop() {
+  setTimeout(() => {
+    const endTime = new Date();
+    const timeElapsedMs = endTime.getTime() - startTime.getTime();
+    console.log("Time elapsed: " + timeElapsedMs / 1000 + " s");
+    pointOnPolygon(timeElapsedMs / 1000);
+    loop();
+  }, 1000);
+}
+
 initialized.then(() => {
-  main();
+  loop();
 });
