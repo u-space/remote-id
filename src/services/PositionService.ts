@@ -42,10 +42,19 @@ export class PositionService {
       operating_area_end_time: new Date(
         positionRequest.operating_area.end_time
       ),
+      operating_area_polygon: {
+        type: "Polygon",
+        coordinates: [
+          positionRequest.operating_area.polygon.map((ip) => {
+            return [ip.longitude, ip.latitude, ip.altitude];
+          }),
+        ],
+      },
     };
     try {
       return await this.positionDao.save(position);
     } catch (error: any) {
+      console.log(error);
       throw new Error(
         "There was an error trying to execute PositionService.addPosition()"
       );
