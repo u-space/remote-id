@@ -18,6 +18,9 @@ export class Position {
   @Column({ type: "uuid" })
   uas_id?: string;
 
+  @Column({ type: "uuid", nullable: true })
+  operation_id?: string;
+
   @Column({ type: "int" })
   ua_type?: number;
 
