@@ -10,26 +10,18 @@ import Configuration from "./utils/Configuration";
 import JWTUtilsFactory from "./controllers/utils/jwt/JWTUtilsFactory";
 import { v4 as uuidv4 } from "uuid";
 import ConsoleUtils, { ConsoleColor } from "./utils/ConsoleUtils";
+import { initialized } from "./data-source";
+
 // const pathToSwaggerUi = require("swagger-ui-dist").absolutePath();
 
 let auth_public_key = "";
 const PORT = Config.PORT;
 const app = express();
 try {
+  //middlewares
   app.use(cors());
   app.use(express.json());
-
-  // if (Configuration.MOCK_JWT_VERIFICATION) {
-  //   app.use(
-  //     JWTUtilsFactory.getJWTUtils(
-  //       true,
-  //       Configuration.JWT_USERNAME,
-  //       ""
-  //     ).getCheckJWTFunction()
-  //   );
-  // } else {
   auth_public_key = readFileSync("./public.key", "utf8");
-  // log request
   app.use((req: Request, res: Response, next: NextFunction) => {
     consoleLogRequest(req);
     next();
@@ -44,18 +36,21 @@ try {
   // }
 
   app.use(router);
-  // app listen using ssl
-  https
-    .createServer(
-      {
-        key: readFileSync(Configuration.SSL_KEY),
-        cert: readFileSync(Configuration.SSL_CERT),
-      },
-      app
-    )
-    .listen(PORT, () => {
-      console.log(`flight-request-api listening on port ${PORT}`);
-    });
+
+  initialized.then(() => {
+    // app listen using ssl
+    https
+      .createServer(
+        {
+          key: readFileSync(Configuration.SSL_KEY),
+          cert: readFileSync(Configuration.SSL_CERT),
+        },
+        app
+      )
+      .listen(PORT, () => {
+        console.log(`flight-request-api listening on port ${PORT}`);
+      });
+  });
 } catch (error) {
   console.log(error);
 }
