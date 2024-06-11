@@ -1,5 +1,5 @@
 import { Router } from "express";
-import CoordinationController from "./controllers/CoordinationController";
+import { PositionController } from "./controllers/PositionController";
 
 const router = Router();
 
@@ -7,19 +7,19 @@ const router = Router();
  * -------------------- coordination  --------------------
  * -------------------------------------------------------
  */
-const coordinationController = new CoordinationController();
+const positionController = new PositionController();
 
-router.get(
-  "/coordination",
-  coordinationController.getCoordinations.bind(coordinationController)
-);
-router.get(
-  "/coordination/:id",
-  coordinationController.getCoordination.bind(coordinationController)
-);
 router.post(
-  "/coordination",
-  coordinationController.postCoordination.bind(coordinationController)
+  "/position",
+  positionController.postPositionRequest.bind(positionController)
 );
+// router.get(
+//   "/coordination/:id",
+//   positionController.getCoordination.bind(positionController)
+// );
+// router.post(
+//   "/coordination",
+//   positionController.postCoordination.bind(positionController)
+// );
 
 export { router };
