@@ -26,13 +26,14 @@ try {
     consoleLogRequest(req);
     next();
   });
-  app.use(
-    JWTUtilsFactory.getJWTUtils(
-      false,
-      "",
-      auth_public_key
-    ).getCheckJWTFunction()
-  );
+
+  // app.use(
+  //   JWTUtilsFactory.getJWTUtils(
+  //     false,
+  //     "",
+  //     auth_public_key
+  //   ).getCheckJWTFunction()
+  // );
   // }
 
   app.use(router);
