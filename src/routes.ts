@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PositionController } from "./controllers/PositionController";
 
-const router = Router();
+export const router = Router();
 
 /* -------------------------------------------------------
  * -------------------- coordination  --------------------
@@ -23,6 +23,29 @@ router.get(
   "/position/after/:id",
   positionController.getPositionAfterIdRequest.bind(positionController)
 );
+
+router.get(
+  "/position/between/:start/:end",
+  positionController.getPositionsBetweenDates.bind(positionController)
+);
+
+router.get(
+  "/position/last",
+  positionController.getLastPosition.bind(positionController)
+);
+
+router.get(
+  "/position/operation/:id",
+  positionController.getPositionsByOperationId.bind(positionController)
+);
+
+router.get(
+  "/position/operation/",
+  positionController.getPositionsByOperationIdWithDates.bind(positionController)
+);
+
+// TODO
+
 // router.get(
 //   "/coordination/:id",
 //   positionController.getCoordination.bind(positionController)
@@ -31,5 +54,3 @@ router.get(
 //   "/coordination",
 //   positionController.postCoordination.bind(positionController)
 // );
-
-export { router };
