@@ -21,7 +21,7 @@ interface IOperationArea {
 
 export interface IPositionPostRequest {
   uas_id: string;
-  operation_id?: number;
+  operation_id?: string;
   ua_type: number;
   timestamp: string;
   operational_status: number;
