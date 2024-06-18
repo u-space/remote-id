@@ -19,6 +19,10 @@ export class PositionController {
 
     const { username } = getTokenPayload(token);
 
+    if (username === undefined) {
+      return ErrorUtils.respond4XX(res, 401, "Unauthorized");
+    }
+
     try {
       this.positionService.addPosition(iPosition, username);
     } catch (error) {
@@ -30,6 +34,15 @@ export class PositionController {
     try {
       const positions = await this.positionService.getPositions();
       res.status(200).send(positions);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  getLastPosition = async (req: Request, res: Response) => {
+    try {
+      const positions = await this.positionService.getLastPosition();
+      res.status(200).send(positions[0]);
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -52,6 +65,38 @@ export class PositionController {
         new Date(startDate),
         new Date(endDate)
       );
+      res.status(200).send(positions);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  getPositionsByOperationId = async (req: Request, res: Response) => {
+    try {
+      const { operationId } = req.params;
+
+      const positions = await this.positionService.getPositionsByOperationId(
+        operationId
+      );
+      res.status(200).send(positions);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  getPositionsByOperationIdWithDates = async (req: Request, res: Response) => {
+    try {
+      const { gufi, time_start, time_end } = req.query as {
+        [key: string]: string;
+      };
+      const operationId = gufi;
+
+      const positions =
+        await this.positionService.getPositionsByOperationIdWithDates(
+          operationId,
+          new Date(time_start),
+          new Date(time_end)
+        );
       res.status(200).send(positions);
     } catch (error) {
       console.log("Error: ", error);

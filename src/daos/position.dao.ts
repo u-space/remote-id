@@ -21,6 +21,10 @@ export class PositionDao {
     }
   }
 
+  async lastPosition() {
+    return this.repository.find({ order: { id: "DESC" }, take: 1 });
+  }
+
   async allAfterId(id: number) {
     try {
       return this.repository.find({ where: { id: MoreThan(id) } });
@@ -39,6 +43,36 @@ export class PositionDao {
     }
   }
 
+  async getPositionsByOperationId(operationId: string) {
+    try {
+      return this.repository.find({
+        where: { operation_id: operationId },
+      });
+    } catch (error: any) {
+      throw new Error(
+        "There was an error trying to execute PositionDao.getPositionsByOperationId()"
+      );
+    }
+  }
+
+  async getPositionsByOperationIdWithDates(
+    operationId: string,
+    startDate: Date,
+    endDate: Date
+  ) {
+    try {
+      return this.repository.find({
+        where: {
+          operation_id: operationId,
+          // timestamp: Between(startDate, endDate),
+        },
+      });
+    } catch (error: any) {
+      throw new Error(
+        "There was an error trying to execute PositionDao.getPositionsByOperationId()"
+      );
+    }
+  }
   async one(id: number): Promise<Position> {
     try {
       return this.repository.findOneByOrFail({ id });

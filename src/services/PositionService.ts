@@ -14,12 +14,32 @@ export class PositionService {
     return await this.positionDao.all();
   }
 
+  async getLastPosition() {
+    return await this.positionDao.lastPosition();
+  }
+
   async getPositionsAfterId(id: number) {
     return await this.positionDao.allAfterId(id);
   }
 
   async getPositionsBetweenDates(startDate: Date, endDate: Date) {
     return await this.positionDao.allBetweenDates(startDate, endDate);
+  }
+
+  async getPositionsByOperationId(operationId: string) {
+    return await this.positionDao.getPositionsByOperationId(operationId);
+  }
+
+  async getPositionsByOperationIdWithDates(
+    operationId: string,
+    startDate: Date,
+    endDate: Date
+  ) {
+    return await this.positionDao.getPositionsByOperationIdWithDates(
+      operationId,
+      startDate,
+      endDate
+    );
   }
 
   async addPosition(positionRequest: IPositionPostRequest, username: string) {
