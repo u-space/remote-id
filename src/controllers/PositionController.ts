@@ -51,6 +51,13 @@ export class PositionController {
   getPositionAfterIdRequest = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return ErrorUtils.respond4XX(
+          res,
+          400,
+          "Missing required parameter: id"
+        );
+      }
       const positions = await this.positionService.getPositionsAfterId(+id);
       res.status(200).send(positions);
     } catch (error) {
@@ -73,10 +80,18 @@ export class PositionController {
 
   getPositionsByOperationId = async (req: Request, res: Response) => {
     try {
-      const { operationId } = req.params;
+      const { id } = req.params;
+
+      if (!id) {
+        return ErrorUtils.respond4XX(
+          res,
+          400,
+          "Missing required parameter: id"
+        );
+      }
 
       const positions = await this.positionService.getPositionsByOperationId(
-        operationId
+        id
       );
       res.status(200).send(positions);
     } catch (error) {
@@ -90,6 +105,14 @@ export class PositionController {
         [key: string]: string;
       };
       const operationId = gufi;
+
+      if (!operationId) {
+        return ErrorUtils.respond4XX(
+          res,
+          400,
+          "Missing required parameter: operationId"
+        );
+      }
 
       const positions =
         await this.positionService.getPositionsByOperationIdWithDates(
