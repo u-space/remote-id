@@ -44,6 +44,7 @@ export class PositionService {
 
   async addPosition(positionRequest: IPositionPostRequest, username: string) {
     const position: Position = {
+      operation_id: positionRequest.operation_id,
       operator_username: username,
       uas_id: positionRequest.uas_id,
       ua_type: positionRequest.ua_type,
