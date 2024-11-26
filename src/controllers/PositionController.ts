@@ -10,20 +10,20 @@ export class PositionController {
   postPositionRequest = async (req: Request, res: Response) => {
     let token: string;
 
-    const iPosition: IPositionPostRequest = req.body;
-    token = iPosition.authentication_data;
-
-    if (token === undefined) {
-      return ErrorUtils.respond4XX(res, 401, "Unauthorized");
-    }
-
-    const { username } = getTokenPayload(token);
-
-    if (username === undefined) {
-      return ErrorUtils.respond4XX(res, 401, "Unauthorized");
-    }
-
     try {
+      const iPosition: IPositionPostRequest = req.body;
+      token = iPosition.authentication_data;
+
+      if (token === undefined) {
+        return ErrorUtils.respond4XX(res, 401, "Unauthorized");
+      }
+
+      const { username } = getTokenPayload(token);
+
+      if (username === undefined) {
+        return ErrorUtils.respond4XX(res, 401, "Unauthorized");
+      }
+
       this.positionService.addPosition(iPosition, username);
     } catch (error) {
       console.log("Error: ", error);
