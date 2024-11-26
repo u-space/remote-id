@@ -24,9 +24,11 @@ export class PositionController {
         return ErrorUtils.respond4XX(res, 401, "Unauthorized");
       }
 
-      this.positionService.addPosition(iPosition, username);
+      const positions = await this.positionService.addPosition(iPosition, username);
+      res.status(200).send(positions);
     } catch (error) {
       console.log("Error: ", error);
+      return ErrorUtils.respond4XX(res, 400, (error as Error).message);
     }
   };
 
@@ -36,6 +38,7 @@ export class PositionController {
       res.status(200).send(positions);
     } catch (error) {
       console.log("Error: ", error);
+      return ErrorUtils.respond4XX(res, 400, (error as Error).message);
     }
   };
 
@@ -62,6 +65,8 @@ export class PositionController {
       res.status(200).send(positions);
     } catch (error) {
       console.log("Error: ", error);
+      return ErrorUtils.respond4XX(res, 400, (error as Error).message);
+
     }
   };
 
